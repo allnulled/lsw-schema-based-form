@@ -1,0 +1,177 @@
+<div class="lsw_schema_form">
+    <div class="lsw_schema_form_container">
+        <div class="lsw_schema_form_content">
+            <div class="pad_1"
+                ref="schemaForm0"
+                v-xform.form="{ onSubmit, onValidate }"
+                v-if="isLoaded">
+                <div class="">
+                    <div class="position_relative">
+                        <div class="pad_left_1 schema_form_title_box nowrap schema_form_title_text">
+                            <div class="flex_row">
+                                <div class="flex_100">
+                                    <div class="title_box_one_line">
+                                        <div class="title_text_cell">
+                                            {{ tableDefinition?.hasExtraAttributes?.readableName ?
+                                            $lsw.utils.capitalize(tableDefinition.hasExtraAttributes.readableName) : model.tableId }}
+                                            <span v-if="isUpdateOperation">[#{{ model.rowId }}]</span>
+                                            <span v-else>[new]</span>
+                                        </div>
+                                        <div class="title_database_id_cell" style="font-size: 10px;">[{{model.databaseId}}]</div>
+                                    </div>
+                                </div>
+                                <div class="flex_1 flex_row centered pad_left_1 pad_right_1">
+                                    <button class="bright_border margin_right_1 nowrap" v-on:click="submitForm">⚡️</button>
+                                    <button class="danger_button nowrap"
+                                        v-if="isUpdateOperation"
+                                        v-on:click="deleteRow">❌ #{{model.rowId}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex_row centered schema_form_top_panel"
+                        style="min-height: 30px;border-top: 4px double #210e64; padding: 6px;">
+                        <div class="flex_1 flex_row centered">
+                            <button class="bright_border margin_left_1 nowrap"
+                                :class="{activated: section === 'campos propios'}"
+                                v-on:click="() => selectSection('campos propios')">🧱</button>
+                            <button class="bright_border margin_left_1 nowrap"
+                                :class="{activated: section === 'campos reflejos'}"
+                                v-on:click="() => selectSection('campos reflejos')">↔️</button>
+                        </div>
+                        <div class="flex_100"></div>
+                        <div class="flex_1 flex_row centered">
+                            <button class="bright_border margin_right_1 nowrap"
+                                v-on:click="validateForm">✅</button>
+                            <button class="bright_border margin_right_1 nowrap"
+                                :class="{activated: isShowingFormInfo}"
+                                v-on:click="toggleFormInfo">ℹ️</button>
+                            <button class="bright_border margin_right_1 nowrap"
+                                v-on:click="openEditables">🔓*</button>
+                            <button class="bright_border margin_right_1 nowrap"
+                                v-on:click="closeEditables">🔒*</button>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="isShowingFormInfo"
+                    class="scrollable_text_area">
+                    <pre style="background-color: white; color: black; font-family: Arial; font-size: 11px; padding: 4px; margin: 0px; border-top: 1px solid white;">ℹ️: {{ tableDefinition }}</pre>
+                </div>
+                <div class="lsw_table_viewer" style="padding: 0px; min-height: 0%;">
+                    <div class="pestania"
+                        v-if="section === 'campos propios'">
+                        <div class="subtitle_box">Campos propios:</div>
+                        <table class="collapsed_table lsw_table_itself width_100">
+                            <tbody>
+                                <tr v-for="column, columnId, columnCounter in columnDefinitions"
+                                    v-bind:key="'schema-column-' + columnCounter"
+                                    class="row_for_table"
+                                    :class="((columnCounter === 0) || (columnCounter % 2 === 0)) ? 'odd' : ''">
+                                    <td class="pad_1">
+                                        <!--This will load component [typically] placed on:-->
+                                        <!--src/lsw-framework/components/lsw-formtype/type/lsw-*-control/lsw-*-control.{html,css,js}-->
+                                        <component :is="column.hasFormtypeSettings.id"
+                                            v-bind="{}"
+                                            :settings="{
+                                            name: columnId,
+                                            database: model.databaseId,
+                                            table: model.tableId,
+                                            entity: model.entityId,
+                                            column: column,
+                                            parentSchemaForm: own,
+                                            label: (columnCounter+1) + '. ' + (column.hasLabel || ('Campo «' + columnId + '»')),
+                                            extraAttributes: column.hasExtraAttributes,
+                                            initialValue: ((typeof value !== 'undefined') && (columnId in value)) ? value[columnId] : '',
+                                            input: {
+                                                props: {
+                                                    ...column.hasFormtypeSettings.input.props,
+                                                },
+                                                events: {
+                                                    ...column.hasFormtypeSettings.input.events
+                                                }
+                                            },
+                                            formtypeParameters: column.hasFormtypeParameters || {},
+                                            formtypeSettings: column.hasFormtypeSettings
+                                        }" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="flex_100">
+                            <div class="flex_row centered schema_form_title_box bottom_title_box"
+                                style="background-color: #333333; padding-top: 6px; padding-bottom: 4px;">
+                                <div class="flex_1 flex_row centered"
+                                    v-if="isUpdateOperation">
+                                    <button class="margin_left_1 nowrap danger_button"
+                                        v-on:click="deleteRow">❌ #{{model.rowId}}</button>
+                                </div>
+                                <div class="flex_100"></div>
+                                <div class="flex_1 flex_row centered pad_right_1">
+                                    <button class="bright_border margin_left_1 nowrap"
+                                        v-on:click="submitForm">⚡️ Enviar</button>
+                                    <button class="bright_border margin_left_1 nowrap"
+                                        v-on:click="validateForm">✅ Validar</button>
+                                    <button class="bright_border margin_left_1 nowrap"
+                                        v-on:click="openEditables">🔓*</button>
+                                    <button class="bright_border margin_left_1 nowrap"
+                                        v-on:click="closeEditables">🔒*</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pestania"
+                        v-if="section === 'campos reflejos'">
+                        <div class="subtitle_box">Campos reflejos:</div>
+                        <table class="collapsed_table lsw_table_itself width_100">
+                            <tbody>
+                                <tr v-for="externalColumn, externalColumnId, externalColumnCounter in tableDefinition.externalProperties"
+                                    v-bind:key="'schema-external-column-' + externalColumnCounter"
+                                    class="row_for_table"
+                                    :class="((externalColumnCounter === 0) || (externalColumnCounter % 2 === 0)) ? 'odd' : ''">
+                                    <td class="pad_1">
+                                        <!--This will load component [typically] placed on:-->
+                                        <!--src/lsw-framework/components/lsw-formtype/type/lsw-*-control/lsw-*-control.{html,css,js}-->
+                                        <template v-if="externalColumn.isType === 'ref-list'">
+                                            <lsw-ref-list-control :settings="{
+                                            name: externalColumnId,
+                                            database: model.databaseId,
+                                            table: model.tableId,
+                                            entity: model.entityId,
+                                            column: externalColumn,
+                                            parentSchemaForm: own,
+                                            label: (externalColumnCounter+1) + '. ' + (externalColumn.hasLabel || ('Campo «' + externalColumnId + '»')),
+                                        }" />
+                                        </template>
+                                        <!--component :is="column.hasFormtypeSettings.id"
+                                        v-bind="{}"
+                                        :settings="{
+                                            name: columnId,
+                                            database: model.databaseId,
+                                            table: model.tableId,
+                                            entity: model.entityId,
+                                            column: column,
+                                            parentSchemaForm: own,
+                                            label: (externalColumnCounter+1) + '. ' + (column.hasLabel || ('Campo «' + columnId + '»')),
+                                            extraAttributes: column.hasExtraAttributes,
+                                            initialValue: ((typeof value !== 'undefined') && (columnId in value)) ? value[columnId] : '',
+                                            input: {
+                                                props: {
+                                                    ...column.hasFormtypeSettings.input.props,
+                                                },
+                                                events: {
+                                                    ...column.hasFormtypeSettings.input.events
+                                                }
+                                            },
+                                            formtypeParameters: column.hasFormtypeParameters || {},
+                                            formtypeSettings: column.hasFormtypeSettings
+                                        }" /-->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

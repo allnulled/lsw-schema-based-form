@@ -1,0 +1,60 @@
+.lsw-schema-based-form {}
+
+.schema_form_top_panel {
+    background-color: #113;
+}
+
+.title_box_one_line {
+    display: flex;
+    flex-direction: column;
+}
+
+.title_text_cell {
+    flex: 1;
+    padding: 4px;
+    padding-left: 0px;
+}
+
+.title_database_id_cell {
+    flex: 1;
+    color: #AAA;
+    padding-bottom: 4px;
+}
+
+.schema_form_title_box {
+  background-color: rgb(2, 2, 32);
+  color: white;
+  padding-top: 0px;
+  font-size: 14px;
+  box-shadow: 0 0 4px black;
+  border: 4px double yellow;
+}
+
+.subtitle_box {
+    background-color: #333;
+    color: white;
+    padding: 8px;
+    font-weight: bold;
+}
+
+.bottom_title_box {
+    border: 0px solid black;
+    border-top: 0px solid black;
+}
+
+.schema_form_title_text {
+    text-shadow: 0 0 1px white;
+}
+
+.lsw_schema_form_container {
+    text-align: center;
+}
+
+.lsw_schema_form_content {
+    display: inline-block;
+    text-align: left;
+    max-width: 450px;
+    width: 100%;
+    resize: vertical;
+}
+
