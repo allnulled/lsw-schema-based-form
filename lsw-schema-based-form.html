@@ -73,26 +73,26 @@
                                         <component :is="column.hasFormtypeSettings.id"
                                             v-bind="{}"
                                             :settings="{
-                                            name: columnId,
-                                            database: model.databaseId,
-                                            table: model.tableId,
-                                            entity: model.entityId,
-                                            column: column,
-                                            parentSchemaForm: own,
-                                            label: (columnCounter+1) + '. ' + (column.hasLabel || ('Campo «' + columnId + '»')),
-                                            extraAttributes: column.hasExtraAttributes,
-                                            initialValue: ((typeof value !== 'undefined') && (columnId in value)) ? value[columnId] : '',
-                                            input: {
-                                                props: {
-                                                    ...column.hasFormtypeSettings.input.props,
+                                                name: columnId,
+                                                database: model.databaseId,
+                                                table: model.tableId,
+                                                entity: model.entityId,
+                                                column: column,
+                                                parentSchemaForm: own,
+                                                label: (columnCounter+1) + '. ' + (column.hasLabel || ('Campo «' + columnId + '»')),
+                                                extraAttributes: column.hasExtraAttributes,
+                                                initialValue: ((typeof value !== 'undefined') && (columnId in value)) ? value[columnId] : '',
+                                                input: {
+                                                    props: {
+                                                        ...column.hasFormtypeSettings.input.props,
+                                                    },
+                                                    events: {
+                                                        ...column.hasFormtypeSettings.input.events
+                                                    }
                                                 },
-                                                events: {
-                                                    ...column.hasFormtypeSettings.input.events
-                                                }
-                                            },
-                                            formtypeParameters: column.hasFormtypeParameters || {},
-                                            formtypeSettings: column.hasFormtypeSettings
-                                        }" />
+                                                formtypeParameters: column.hasFormtypeParameters || {},
+                                                formtypeSettings: column.hasFormtypeSettings
+                                            }" />
                                     </td>
                                 </tr>
                             </tbody>
